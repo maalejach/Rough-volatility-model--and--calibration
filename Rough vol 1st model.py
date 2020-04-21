@@ -189,42 +189,21 @@ def plot_scenario_paths(df_prices_per_scenario, nb_scenarios, timestep):
 
 from scipy.stats import norm
 
-n = norm.pdf
-N = norm.cdf
-
-def bs_price(cp_flag,S,K,T,r,v,q=0.0):
-    d1 = (log(S/K)+(r+v*v/2.)*T)/(v*sqrt(T))
-    d2 = d1-v*sqrt(T)
-    if cp_flag == 'c':
-        price = S*exp(-q*T)*N(d1)-K*exp(-r*T)*N(d2)
-    else:
-        price = K*exp(-r*T)*N(-d2)-S*exp(-q*T)*N(-d1)
-    return price
-
-def bs_vega(cp_flag,S,K,T,r,v,q=0.0):
-    d1 = (log(S/K)+(r+v*v/2.)*T)/(v*sqrt(T))
-    return S * sqrt(T)*n(d1)
-
-def implied_volatility(target_value, S, K, T, r, call_put="c"):
-    MAX_ITERATIONS = 100
-    PRECISION = 1.0e-5
-    
-    sigma = 0.5
-    for i in range(0, MAX_ITERATIONS):
-        price = bs_price(call_put, S, K, T, r, sigma)
-        vega = bs_vega(call_put, S, K, T, r, sigma)
-        
-        price = price
-        diff = target_value - price  # our root
-        
-        #print(i, sigma, diff)
-        
-        if (abs(diff) < PRECISION):
+def implied_volatility(Price,Stock,Strike,Time,Rf):
+    P = float(Price)
+    S = float(Stock)
+    E = float(Strike)
+    T = float(Time)
+    r = float(Rf)
+    sigma = 0.01
+    while sigma < 1:
+        d_1 = float(float((np.log(S/E)+(r+(sigma**2)/2)*T))/float((sigma*(np.sqrt(T)))))
+        d_2 = float(float((np.log(S/E)+(r-(sigma**2)/2)*T))/float((sigma*(np.sqrt(T)))))
+        P_implied = float(S*norm.cdf(d_1) - E*np.exp(-r*(T/365))*norm.cdf(d_2))
+        if P-(P_implied) < 0.001:
             return sigma
-        sigma = sigma + diff/vega # f(x) / f'(x)
-    
-    # value wasn't found, return best guess so far
-    return sigma
+        sigma +=0.001
+    return np.nan
 
 
 # In[481]:
@@ -233,8 +212,8 @@ def implied_volatility(target_value, S, K, T, r, call_put="c"):
 class RSV_model:
     
     #instationate with configuration and the model
-    def __init__(self, stock_price = 200, Rf = 0.05, nb_scenarios = 1000,
-                             timestep_days = 1, sigma0=0.1, H = 0.04, nu = 1, corr = -0.4):
+    def __init__(self, stock_price = 200,Rf = 0.05,nb_scenarios = 1000,
+                             timestep_days = 1, sigma0=0.1, H = 0.04,nu = 1,corr = -0.4):
         self.stock_price = stock_price
         self.Rf = Rf
         #self.nb_scenarios = nb_scenarios

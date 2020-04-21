@@ -1,2 +1,2 @@
-# Rough-volatility
-Implementation of the rough volatility model
+# ROUGH VOLATILITY MODEL
+### Authors : MAALEJ Achraf - HOUAS Jed - DRIDI Achraf - OUBAIK Ilyass

@@ -1,0 +1,5 @@
+
+[1] Mathieu Rosenbaum Jim Gatheral, Thibault Jaisson. Volatility is rough. October 4 2014.
+[2] Mikko S. Pakkanen Mikkel Bennedsen, Asger Lunde. Hybrid scheme for brownian semistation- ary processes. Mai 16 2017.
+[3] Jim Gatheral Christian Bayer, Peter Friz. Pricing under rough volatility. January 23 2015.
+[4] N.J. Higham. Computing a nearest symmetric positive semi-definite matrix. 1988.
